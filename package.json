@@ -10,7 +10,9 @@
         "start": "nodemon dist/main",
         "start:local": "nest start",
         "test": "jest --collectCoverage",
-        "test:e2e": "jest --config tests/e2e-support/jest-e2e.js --verbose --maxWorkers=1 --passWithNoTests"
+        "test:e2e": "jest --config tests/e2e-support/jest-e2e.js --verbose --maxWorkers=1 --passWithNoTests",
+        "lint": "eslint 'src/**/*.{js,ts}'",
+        "lint:fix": "eslint 'src/**/*.{js,ts}' --fix"
     },
     "dependencies": {
         "@nestjs/common": "^10.4.1",
@@ -27,7 +29,13 @@
         "@swc/jest": "^0.2.36",
         "@types/jest": "^29.5.12",
         "@types/supertest": "^6.0.2",
+        "@typescript-eslint/eslint-plugin": "^8.4.0",
+        "@typescript-eslint/parser": "^8.4.0",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
         "jest": "^29.7.0",
+        "prettier": "^3.3.3",
         "supertest": "^7.0.0",
         "ts-jest": "^29.2.5",
         "tsconfig-paths": "^4.2.0"

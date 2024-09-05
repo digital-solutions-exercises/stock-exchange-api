@@ -5,9 +5,9 @@ import { healthApiResponse } from './health.swagger';
 @ApiTags('health')
 @Controller('health')
 export class HealthController {
-    @Get()
-    @ApiResponse(healthApiResponse)
-    checkHealth() {
-        return { status: 'ok' };
-    }
+  @Get()
+  @ApiResponse(healthApiResponse)
+  checkHealth() {
+    return { status: 'ok' };
+  }
 }
