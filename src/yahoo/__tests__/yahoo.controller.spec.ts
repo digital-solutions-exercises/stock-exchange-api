@@ -7,7 +7,7 @@ jest.mock('yahoo-finance2', () => ({
   search: jest.fn(),
   quoteSummary: jest.fn(),
   quote: jest.fn(),
-  historical: jest.fn(),
+  chart: jest.fn(),
 }));
 
 describe('YahooController', () => {
@@ -101,9 +101,9 @@ describe('YahooController', () => {
   describe('getHistoricalData', () => {
     it('should return historical data when successful', async () => {
       const mockHistoricalData = { prices: [] as any };
-      (yahooFinance.historical as jest.Mock).mockResolvedValue(
-        mockHistoricalData
-      );
+      (yahooFinance.chart as jest.Mock).mockResolvedValue({
+        quotes: mockHistoricalData,
+      });
 
       const result = await controller.getHistoricalData(
         'AAPL',
@@ -115,7 +115,7 @@ describe('YahooController', () => {
     });
 
     it('should throw an HttpException when getting historical data fails', async () => {
-      (yahooFinance.historical as jest.Mock).mockRejectedValue(
+      (yahooFinance.chart as jest.Mock).mockRejectedValue(
         new Error('historical failed')
       );
 

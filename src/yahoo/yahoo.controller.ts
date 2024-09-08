@@ -7,12 +7,8 @@ import {
   Query,
 } from '@nestjs/common';
 import to from 'await-to-js';
-// import { MailerGrpcService } from '../mailer-grpc/mailer-grpc-service.service';
-// import { SendEmailResponse } from 'src/generated/mailer/SendEmailResponse';
-// import { JoiValidationPipe } from '../utils/joi-validation.pipe';
-// import { SendEmailSchema } from './email-api.validator';
 import yahooFinance from 'yahoo-finance2';
-import { HistoricalHistoryResult } from 'yahoo-finance2/dist/esm/src/modules/historical';
+import { ChartResultArrayQuote } from 'yahoo-finance2/dist/esm/src/modules/chart';
 import { Quote } from 'yahoo-finance2/dist/esm/src/modules/quote';
 import { QuoteSummaryResult } from 'yahoo-finance2/dist/esm/src/modules/quoteSummary-iface';
 import { SearchResult } from 'yahoo-finance2/dist/esm/src/modules/search';
@@ -75,17 +71,18 @@ export class YahooController {
     @Query('resolution') resolution: '1d' | '1wk' | '1mo',
     @Query('startDate') startDate: number,
     @Query('endDate') endDate: number
-  ): Promise<HistoricalHistoryResult> {
+  ): Promise<ChartResultArrayQuote[]> {
     const parsedStartDate = new Date(Number(startDate));
     const parsedEndDate = new Date(Number(endDate));
 
     const [err, response] = await to(
-      yahooFinance.historical(stockSymbol, {
+      yahooFinance.chart(stockSymbol, {
         period1: parsedStartDate,
         period2: parsedEndDate,
         interval: resolution,
       })
     );
+
     if (err) {
       this.logger.error(`GET historical data failed: ${err}`);
       throw new HttpException(
@@ -94,6 +91,6 @@ export class YahooController {
       );
     }
 
-    return response;
+    return response.quotes;
   }
 }
