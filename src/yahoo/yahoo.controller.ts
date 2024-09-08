@@ -68,7 +68,7 @@ export class YahooController {
   @Get('historical-data')
   async getHistoricalData(
     @Query('stockSymbol') stockSymbol: string,
-    @Query('resolution') resolution: '1d' | '1wk' | '1mo',
+    @Query('resolution') resolution: '1h' | '1d' | '1wk' | '1mo',
     @Query('startDate') startDate: number,
     @Query('endDate') endDate: number
   ): Promise<ChartResultArrayQuote[]> {
