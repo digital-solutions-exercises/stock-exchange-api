@@ -56,14 +56,14 @@ describe('YahooController', () => {
     });
   });
 
-  describe('getStockDetails', () => {
+  describe('getQuoteCompanyDetails', () => {
     it('should return stock details when successful', async () => {
       const mockStockDetails = { assetProfile: {} };
       (yahooFinance.quoteSummary as jest.Mock).mockResolvedValue(
         mockStockDetails
       );
 
-      const result = await controller.getStockDetails({
+      const result = await controller.getQuoteCompanyDetails({
         stockSymbol: 'AAPL',
       });
       expect(result).toEqual(mockStockDetails);
@@ -75,7 +75,7 @@ describe('YahooController', () => {
       );
 
       await expect(
-        controller.getStockDetails({
+        controller.getQuoteCompanyDetails({
           stockSymbol: 'AAPL',
         })
       ).rejects.toThrow(

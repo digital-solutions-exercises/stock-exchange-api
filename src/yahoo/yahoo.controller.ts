@@ -45,8 +45,8 @@ export class YahooController {
   }
 
   @UsePipes(new JoiValidationPipe(StockDetailsSchema))
-  @Get('stock-details')
-  async getStockDetails(
+  @Get('quote-company-details')
+  async getQuoteCompanyDetails(
     @Query() query: { stockSymbol: string }
   ): Promise<QuoteSummaryResult> {
     const { stockSymbol } = query;
@@ -112,7 +112,6 @@ export class YahooController {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
-    console.log(response);
 
     return response.quotes;
   }

@@ -14,7 +14,7 @@ export const QuoteSchema = joi.object({
 
 export const HistoricalDataSchema = joi.object({
   stockSymbol: joi.string().required(),
-  resolutions: joi.string().valid('1h', '1d', '1wk', '1mo').required(),
+  resolution: joi.string().valid('1h', '1d', '1wk', '1mo').required(),
   startDate: joi.number().required(),
   endDate: joi.number().required(),
 });

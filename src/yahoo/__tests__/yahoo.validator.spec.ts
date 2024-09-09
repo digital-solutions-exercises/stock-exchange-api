@@ -50,21 +50,21 @@ describe('yahoo.validator', () => {
 
   describe('HistoricalDataSchema', () => {
     test.each`
-      stockSymbol  | resolutions  | startDate     | endDate       | error
+      stockSymbol  | resolution   | startDate     | endDate       | error
       ${'AAPL'}    | ${'1d'}      | ${1622520000} | ${1625112000} | ${undefined}
       ${undefined} | ${'1d'}      | ${1622520000} | ${1625112000} | ${'"stockSymbol" is required'}
-      ${'AAPL'}    | ${undefined} | ${1622520000} | ${1625112000} | ${'"resolutions" is required'}
-      ${'AAPL'}    | ${'5d'}      | ${1622520000} | ${1625112000} | ${'"resolutions" must be one of [1h, 1d, 1wk, 1mo]'}
+      ${'AAPL'}    | ${undefined} | ${1622520000} | ${1625112000} | ${'"resolution" is required'}
+      ${'AAPL'}    | ${'5d'}      | ${1622520000} | ${1625112000} | ${'"resolution" must be one of [1h, 1d, 1wk, 1mo]'}
       ${'AAPL'}    | ${'1d'}      | ${undefined}  | ${1625112000} | ${'"startDate" is required'}
       ${'AAPL'}    | ${'1d'}      | ${1622520000} | ${undefined}  | ${'"endDate" is required'}
       ${'AAPL'}    | ${'1d'}      | ${'invalid'}  | ${1625112000} | ${'"startDate" must be a number'}
       ${'AAPL'}    | ${'1d'}      | ${1622520000} | ${'invalid'}  | ${'"endDate" must be a number'}
     `(
       'should return error if some field is not valid',
-      ({ stockSymbol, resolutions, startDate, endDate, error }) => {
+      ({ stockSymbol, resolution, startDate, endDate, error }) => {
         const validationResult = HistoricalDataSchema.validate({
           stockSymbol,
-          resolutions,
+          resolution,
           startDate,
           endDate,
         });
