@@ -5,22 +5,33 @@ import {
   HttpStatus,
   Logger,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import to from 'await-to-js';
+import { JoiValidationPipe } from '../utils/joi-validation.utils';
 import yahooFinance from 'yahoo-finance2';
 import { ChartResultArrayQuote } from 'yahoo-finance2/dist/esm/src/modules/chart';
 import { Quote } from 'yahoo-finance2/dist/esm/src/modules/quote';
 import { QuoteSummaryResult } from 'yahoo-finance2/dist/esm/src/modules/quoteSummary-iface';
 import { SearchResult } from 'yahoo-finance2/dist/esm/src/modules/search';
+import {
+  HistoricalDataSchema,
+  QuoteSchema,
+  StockDetailsSchema,
+  SymbolsSchema,
+} from './yahoo.validator';
 
 @Controller('yahoo')
 export class YahooController {
   private readonly logger = new Logger(YahooController.name);
 
+  @UsePipes(new JoiValidationPipe(SymbolsSchema))
   @Get('symbols')
   async getSymbols(
-    @Query('query') query: string
+    @Query() requestQuery: { query: string }
   ): Promise<SearchResult['quotes']> {
+    const { query } = requestQuery;
+
     const [err, response] = await to(yahooFinance.search(query));
     if (err) {
       this.logger.error(`GET symbols failed: ${err}`);
@@ -33,10 +44,13 @@ export class YahooController {
     return response.quotes;
   }
 
+  @UsePipes(new JoiValidationPipe(StockDetailsSchema))
   @Get('stock-details')
   async getStockDetails(
-    @Query('stockSymbol') stockSymbol: string
+    @Query() query: { stockSymbol: string }
   ): Promise<QuoteSummaryResult> {
+    const { stockSymbol } = query;
+
     const [err, response] = await to(
       yahooFinance.quoteSummary(stockSymbol, { modules: ['assetProfile'] })
     );
@@ -51,8 +65,11 @@ export class YahooController {
     return response;
   }
 
+  @UsePipes(new JoiValidationPipe(QuoteSchema))
   @Get('quote')
-  async getQuote(@Query('stockSymbol') stockSymbol: string): Promise<Quote> {
+  async getQuote(@Query() query: { stockSymbol: string }): Promise<Quote> {
+    const { stockSymbol } = query;
+
     const [err, response] = await to(yahooFinance.quote(stockSymbol));
     if (err) {
       this.logger.error(`GET quote failed: ${err}`);
@@ -65,13 +82,18 @@ export class YahooController {
     return response;
   }
 
+  @UsePipes(new JoiValidationPipe(HistoricalDataSchema))
   @Get('historical-data')
   async getHistoricalData(
-    @Query('stockSymbol') stockSymbol: string,
-    @Query('resolution') resolution: '1h' | '1d' | '1wk' | '1mo',
-    @Query('startDate') startDate: number,
-    @Query('endDate') endDate: number
+    @Query()
+    query: {
+      stockSymbol: string;
+      resolution: '1h' | '1d' | '1wk' | '1mo';
+      startDate: number;
+      endDate: number;
+    }
   ): Promise<ChartResultArrayQuote[]> {
+    const { stockSymbol, resolution, startDate, endDate } = query;
     const parsedStartDate = new Date(Number(startDate));
     const parsedEndDate = new Date(Number(endDate));
 
@@ -90,6 +112,7 @@ export class YahooController {
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+    console.log(response);
 
     return response.quotes;
   }

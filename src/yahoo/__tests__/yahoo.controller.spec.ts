@@ -32,7 +32,9 @@ describe('YahooController', () => {
         quotes: mockQuotes,
       });
 
-      const result = await controller.getSymbols('AAPL');
+      const result = await controller.getSymbols({
+        query: 'AAPL',
+      });
       expect(result).toEqual(mockQuotes);
     });
 
@@ -41,7 +43,11 @@ describe('YahooController', () => {
         new Error('search failed')
       );
 
-      await expect(controller.getSymbols('AAPL')).rejects.toThrow(
+      await expect(
+        controller.getSymbols({
+          query: 'AAPL',
+        })
+      ).rejects.toThrow(
         new HttpException(
           'GET symbols failed: Error: search failed',
           HttpStatus.INTERNAL_SERVER_ERROR
@@ -57,7 +63,9 @@ describe('YahooController', () => {
         mockStockDetails
       );
 
-      const result = await controller.getStockDetails('AAPL');
+      const result = await controller.getStockDetails({
+        stockSymbol: 'AAPL',
+      });
       expect(result).toEqual(mockStockDetails);
     });
 
@@ -66,7 +74,11 @@ describe('YahooController', () => {
         new Error('quoteSummary failed')
       );
 
-      await expect(controller.getStockDetails('AAPL')).rejects.toThrow(
+      await expect(
+        controller.getStockDetails({
+          stockSymbol: 'AAPL',
+        })
+      ).rejects.toThrow(
         new HttpException(
           'GET stock details failed: Error: quoteSummary failed',
           HttpStatus.INTERNAL_SERVER_ERROR
@@ -80,7 +92,9 @@ describe('YahooController', () => {
       const mockQuote = { symbol: 'AAPL', price: 150 };
       (yahooFinance.quote as jest.Mock).mockResolvedValue(mockQuote);
 
-      const result = await controller.getQuote('AAPL');
+      const result = await controller.getQuote({
+        stockSymbol: 'AAPL',
+      });
       expect(result).toEqual(mockQuote);
     });
 
@@ -89,7 +103,11 @@ describe('YahooController', () => {
         new Error('quote failed')
       );
 
-      await expect(controller.getQuote('AAPL')).rejects.toThrow(
+      await expect(
+        controller.getQuote({
+          stockSymbol: 'AAPL',
+        })
+      ).rejects.toThrow(
         new HttpException(
           'GET quote failed: Error: quote failed',
           HttpStatus.INTERNAL_SERVER_ERROR
@@ -105,12 +123,12 @@ describe('YahooController', () => {
         quotes: mockHistoricalData,
       });
 
-      const result = await controller.getHistoricalData(
-        'AAPL',
-        '1d',
-        1622520000000,
-        1622606400000
-      );
+      const result = await controller.getHistoricalData({
+        stockSymbol: 'AAPL',
+        resolution: '1d',
+        startDate: 1622520000000,
+        endDate: 1622606400000,
+      });
       expect(result).toEqual(mockHistoricalData);
     });
 
@@ -120,7 +138,12 @@ describe('YahooController', () => {
       );
 
       await expect(
-        controller.getHistoricalData('AAPL', '1d', 1622520000000, 1622606400000)
+        controller.getHistoricalData({
+          stockSymbol: 'AAPL',
+          resolution: '1d',
+          startDate: 1622520000000,
+          endDate: 1622606400000,
+        })
       ).rejects.toThrow(
         new HttpException(
           'GET historical data failed: Error: historical failed',
